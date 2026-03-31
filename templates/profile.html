@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Профиль {{ profile_user.username }}
+{% endblock %}
+
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+
+            <!-- Заголовок профиля -->
+            <h2 class="profile-heading">
+                Профиль: {{ profile_user.username }}
+                {% if profile_user.admin %}
+                    <span class="badge bg-danger ms-2">Админ</span>
+                {% endif %}
+            </h2>
+
+            <div class="card">
+                <div class="card-body">
+
+                    <!-- Аватарка -->
+                    <div class="text-center mb-4">
+                        {% if profile_user.avatar %}
+                            <img src="{{ url_for('static', filename='avatars/' + profile_user.avatar) }}" alt="Avatar" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid var(--accent);">
+                        {% else %}
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center text-white mb-3" style="width: 150px; height: 150px; font-size: 60px; background-color: #333; border: 3px solid var(--accent);">
+                                {{ profile_user.username[0].upper() }}
+                            </div>
+                        {% endif %}
+
+                        {% if current_user.is_authenticated and current_user.id == profile_user.id %}
+                        <div class="mt-2">
+                            <form method="POST" action="/profile/{{ profile_user.id }}/upload_avatar" enctype="multipart/form-data" class="d-inline-block">
+                                <div class="input-group">
+                                    <input type="file" class="form-control" name="avatar" accept="image/*" required>
+                                    <button type="submit" class="btn btn-primary">Загрузить</button>
+                                </div>
+                                <small style="color: var(--text-muted);">Форматы: PNG, JPG, JPEG, GIF, WEBP (макс. 5MB)</small>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Статистика -->
+                    <h5 class="profile-section-title">Статистика</h5>
+                    <div class="row text-center mb-3">
+                        <div class="col-md-3 mb-3">
+                            <div class="profile-stat-box">
+                                <div class="profile-stat-value" style="color: var(--accent);">{{ messages_count }}</div>
+                                <div class="profile-stat-label">Сообщений</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="profile-stat-box">
+                                <div class="profile-stat-value" style="color: #ff6b6b;">{{ likes_given }}</div>
+                                <div class="profile-stat-label">Лайков поставлено</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="profile-stat-box">
+                                <div class="profile-stat-value" style="color: #ff6b6b;">{{ likes_received }}</div>
+                                <div class="profile-stat-label">Лайков получено</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="profile-stat-box">
+                                <div class="profile-stat-value" style="color: #ffd700;">{{ reputation_count }}</div>
+                                <div class="profile-stat-label">Репутация</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Оценка -->
+                    {% if current_user.is_authenticated and current_user.id != profile_user.id %}
+                    <h5 class="profile-section-title">Оценка игрока</h5>
+                    <div class="text-center mt-3">
+                        <form method="POST" action="/profile/{{ profile_user.id }}/reputation" class="d-inline">
+                            {% if has_given_reputation %}
+                                <button type="submit" class="btn btn-secondary">⭐ Отменить оценку</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-primary">⭐ Отметить как хорошего игрока/собеседника</button>
+                            {% endif %}
+                        </form>
+                    </div>
+                    {% endif %}
+
+                    {% if current_user.is_authenticated and current_user.id == profile_user.id %}
+                    <div class="alert alert-info mt-4">
+                        Это ваш профиль. Другие пользователи могут видеть вашу статистику и оценивать вас.
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <div class="mt-3 text-center">
+                <a href="/community" class="btn btn-outline-primary">Вернуться к чату</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

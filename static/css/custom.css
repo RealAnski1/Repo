@@ -1,0 +1,424 @@
+/* ===== FACEIT-style dark theme ===== */
+
+:root {
+    --bg-primary: #1f1f1f;
+    --bg-secondary: #161616;
+    --bg-card: #2b2b2b;
+    --bg-card-header: #333333;
+    --border-color: #3a3a3a;
+    --accent: #ff5500;
+    --accent-hover: #e64d00;
+    --text-primary: #ffffff;
+    --text-muted: #a0a0a0;
+}
+
+/* Основной фон */
+body {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', 'Segoe UI', sans-serif !important;
+}
+
+/* ===== Шапка в стиле FACEIT ===== */
+.site-header {
+    background-color: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 1px 20px rgba(0, 0, 0, 0.6);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Логотип */
+.header-logo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 130px;
+}
+
+/* Оранжевое пятно-свечение за логотипом */
+.logo-glow {
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle, rgba(255, 85, 0, 0.55) 0%, rgba(255, 85, 0, 0.15) 50%, transparent 75%);
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(6px);
+}
+
+.logo-text {
+    position: relative;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #ffffff !important;
+    text-transform: uppercase;
+}
+
+.logo-accent {
+    color: var(--accent) !important;
+}
+
+/* Навигация в шапке */
+.header-nav .nav-link {
+    color: var(--text-muted) !important;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    padding: 6px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: color 0.2s, background 0.2s;
+}
+
+.header-nav .nav-link.active {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    border-bottom: 2px solid var(--accent);
+    border-radius: 0;
+}
+
+.header-nav .nav-link:hover:not(.active) {
+    background-color: rgba(255, 85, 0, 0.12) !important;
+    color: var(--accent) !important;
+}
+
+/* Кнопки шапки */
+.btn-header-ghost {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    color: #ffffff !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: border-color 0.2s, background 0.2s;
+    text-decoration: none !important;
+}
+
+.btn-header-ghost:hover {
+    border-color: rgba(255,255,255,0.6) !important;
+    background: rgba(255,255,255,0.07) !important;
+    color: #ffffff !important;
+}
+
+.btn-header-danger {
+    border-color: rgba(220, 53, 69, 0.5) !important;
+    color: #f08090 !important;
+}
+
+.btn-header-danger:hover {
+    border-color: #dc3545 !important;
+    background: rgba(220, 53, 69, 0.15) !important;
+    color: #ff6b7a !important;
+}
+
+.btn-header-accent {
+    background: var(--accent) !important;
+    border: 1px solid var(--accent) !important;
+    color: #ffffff !important;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, box-shadow 0.2s;
+    text-decoration: none !important;
+}
+
+.btn-header-accent:hover {
+    background: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+    box-shadow: 0 0 12px rgba(255, 85, 0, 0.45) !important;
+    color: #ffffff !important;
+}
+
+/* Карточки */
+.card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.card-header {
+    background-color: var(--bg-card-header) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    font-weight: 600;
+}
+
+.card-header.bg-primary {
+    background-color: var(--accent) !important;
+    border-bottom-color: var(--accent-hover) !important;
+}
+
+/* Алерты */
+.alert {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 6px !important;
+}
+
+.alert-success {
+    background-color: rgba(25, 135, 84, 0.2) !important;
+    border-color: #198754 !important;
+    color: #75d9a3 !important;
+}
+
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.15) !important;
+    border-color: #0dcaf0 !important;
+    color: #7de8f8 !important;
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.15) !important;
+    border-color: #ffc107 !important;
+    color: #ffd454 !important;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.2) !important;
+    border-color: #dc3545 !important;
+    color: #f08090 !important;
+}
+
+/* Формы */
+.form-control, .form-select {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 6px !important;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 85, 0, 0.25) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-label {
+    color: var(--text-muted) !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Кнопки - основные (оранжевые) */
+.btn-primary, .btn-success {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    border-radius: 6px !important;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    background-color: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+}
+
+.btn-outline-primary, .btn-outline-success {
+    color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    border-radius: 6px !important;
+}
+
+.btn-outline-primary:hover, .btn-outline-success:hover {
+    background-color: var(--accent) !important;
+    color: #ffffff !important;
+}
+
+/* Кнопки - вторичные (синие) */
+.btn-secondary {
+    background-color: #2d5be3 !important;
+    border-color: #2d5be3 !important;
+    border-radius: 6px !important;
+}
+
+.btn-secondary:hover {
+    background-color: #2450cc !important;
+    border-color: #2450cc !important;
+}
+
+.btn-outline-secondary {
+    color: #7a9ef5 !important;
+    border-color: #3a3a3a !important;
+    border-radius: 6px !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #2d5be3 !important;
+    border-color: #2d5be3 !important;
+    color: #ffffff !important;
+}
+
+/* Кнопки в группах (radio) */
+.btn-check:checked + .btn-outline-primary,
+.btn-check:checked + .btn-outline-success,
+.btn-check:checked + .btn-outline-info {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-info {
+    color: #7de8f8 !important;
+    border-color: #0dcaf0 !important;
+    border-radius: 6px !important;
+}
+
+.btn-outline-info:hover {
+    background-color: #0dcaf0 !important;
+    color: #000000 !important;
+}
+
+/* Бейджи */
+.badge.bg-primary, .badge.bg-success {
+    background-color: var(--accent) !important;
+}
+
+.badge.bg-secondary {
+    background-color: #2d5be3 !important;
+}
+
+.badge.bg-info {
+    background-color: #0dcaf0 !important;
+    color: #000000 !important;
+}
+
+/* Ссылки */
+a {
+    color: var(--accent) !important;
+}
+
+.text-decoration-none {
+    color: var(--text-primary) !important;
+}
+
+.text-decoration-none:hover {
+    color: var(--accent) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Модальные окна */
+.modal-content {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 10px !important;
+}
+
+.modal-header {
+    background-color: var(--bg-card-header) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color) !important;
+}
+
+/* Цитата в чате */
+.border-start {
+    border-color: var(--accent) !important;
+}
+
+.bg-light {
+    background-color: rgba(255,255,255,0.05) !important;
+    border-radius: 4px;
+}
+
+/* Таблицы */
+.table {
+    color: var(--text-primary) !important;
+}
+
+.table-dark, .table-dark > * {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(255,255,255,0.04) !important;
+    color: var(--text-primary) !important;
+}
+
+.table > :not(caption) > * > * {
+    border-color: var(--border-color) !important;
+}
+
+/* Скроллбар */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* ===== Профиль ===== */
+.profile-heading {
+    color: #ffffff;
+    font-weight: 700;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 20px;
+}
+
+.profile-section-title {
+    color: #ffffff;
+    font-weight: 600;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 16px;
+}
+
+.profile-stat-box {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px 8px;
+}
+
+.profile-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.profile-stat-label {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* ===== Главная страница ===== */
+.index-heading {
+    color: #ffffff;
+    font-weight: 700;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ffffff;
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+/* ===== Футер ===== */
+.footer-heading {
+    color: #ffffff;
+    font-weight: 600;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #dc3545;
+    display: inline-block;
+    margin-bottom: 12px;
+}

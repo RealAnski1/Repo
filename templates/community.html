@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Общение
+{% endblock %}
+
+{% block menu %}
+
+{% endblock %}
+
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h2 class="mb-4">Чат сообщества</h2>
+
+            <!-- Форма отправки сообщения -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="POST" action="/community" id="messageForm">
+                        <input type="hidden" name="reply_to_id" id="replyToId" value="">
+                        <div id="replyPreview" class="alert alert-info d-none mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>Ответ на сообщение:</strong>
+                                    <div id="replyPreviewText" class="mt-1"></div>
+                                </div>
+                                <button type="button" class="btn-close" onclick="cancelReply()"></button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Ваше сообщение</label>
+                            <textarea class="form-control" id="message" name="message" rows="3" required placeholder="Введите сообщение..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Список сообщений -->
+            <div class="messages-list">
+                {% if messages %}
+                    {% for msg in messages %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="d-flex flex-grow-1">
+                                    <!-- Аватарка -->
+                                    <div class="me-3">
+                                        {% if msg.user.avatar %}
+                                            <img src="{{ url_for('static', filename='avatars/' + msg.user.avatar) }}" alt="Avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px;">
+                                                {{ msg.username[0].upper() }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <!-- Сообщение -->
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            <a href="/profile/{{ msg.user_id }}" class="text-decoration-none">{{ msg.username }}</a>
+                                            {% if msg.user.admin %}
+                                                <span class="badge bg-danger">Админ</span>
+                                            {% endif %}
+                                        </h6>
+
+                                        <!-- Цитируемое сообщение -->
+                                        {% if msg.reply_to_id and msg.reply_to %}
+                                        <div class="border-start border-3 border-primary ps-2 mb-2 small text-muted bg-light p-2">
+                                            <strong>{{ msg.reply_to.username }}:</strong>
+                                            {{ msg.reply_to.text[:100] }}{% if msg.reply_to.text|length > 100 %}...{% endif %}
+                                        </div>
+                                        {% elif msg.reply_to_id %}
+                                        <div class="border-start border-3 border-secondary ps-2 mb-2 small text-muted bg-light p-2">
+                                            <em>Сообщение удалено</em>
+                                        </div>
+                                        {% endif %}
+
+                                        <p class="card-text">{{ msg.text }}</p>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <span class="badge bg-secondary">❤️ {{ msg.likes|length }}</span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Кнопки действий -->
+                                <div class="d-flex gap-1 ms-2">
+                                    {% if current_user.id != msg.user_id %}
+                                    <button type="button" class="btn btn-sm btn-outline-primary reply-btn"
+                                            data-msg-id="{{ msg.id }}"
+                                            data-username="{{ msg.username }}"
+                                            data-text="{{ msg.text }}"
+                                            title="Ответить">
+                                        ↩️
+                                    </button>
+                                    <form method="POST" action="/community/like/{{ msg.id }}">
+                                        <button type="submit" class="btn btn-sm {% if user_likes.get(msg.id) %}btn-danger{% else %}btn-outline-danger{% endif %}" title="Лайк">
+                                            ❤️
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                    {% if current_user.admin and current_user.id != msg.user_id and not msg.user.admin %}
+                                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#banModal{{ msg.id }}" title="Забанить">
+                                        🚩
+                                    </button>
+                                    {% endif %}
+                                    {% if current_user.id == msg.user_id or current_user.admin %}
+                                    <form method="POST" action="/community/delete/{{ msg.id }}">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Удалить это сообщение?')" title="Удалить">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Модальное окно бана -->
+                    {% if current_user.admin and current_user.id != msg.user_id and not msg.user.admin %}
+                    <div class="modal fade" id="banModal{{ msg.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Забанить пользователя {{ msg.username }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form method="POST" action="/ban/{{ msg.user_id }}">
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Срок бана</label>
+                                            <select class="form-select" name="duration" required>
+                                                <option value="day">1 день</option>
+                                                <option value="week">1 неделя</option>
+                                                <option value="month">1 месяц</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Причина</label>
+                                            <select class="form-select" name="reason" required>
+                                                <option value="Нехорошая аватарка">Нехорошая аватарка</option>
+                                                <option value="Неподобающее поведение в чате">Неподобающее поведение в чате</option>
+                                                <option value="Спам">Спам</option>
+                                                <option value="Оскорбление">Оскорбление</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                        <button type="submit" class="btn btn-danger">Забанить</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">
+                        Пока нет сообщений. Будьте первым!
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Обработчик для кнопок ответа
+        document.querySelectorAll('.reply-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var msgId = this.getAttribute('data-msg-id');
+                var username = this.getAttribute('data-username');
+                var text = this.getAttribute('data-text');
+
+                document.getElementById('replyToId').value = msgId;
+                document.getElementById('replyPreview').classList.remove('d-none');
+                var previewText = text.length > 100 ? text.substring(0, 100) + '...' : text;
+                document.getElementById('replyPreviewText').innerHTML = '<strong>' + username + ':</strong> ' + previewText;
+                document.getElementById('message').focus();
+            });
+        });
+    });
+
+    function cancelReply() {
+        document.getElementById('replyToId').value = '';
+        document.getElementById('replyPreview').classList.add('d-none');
+    }
+</script>
+{% endblock %}

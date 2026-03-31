@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Главная страница
+{% endblock %}
+
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+
+            <h1 class="index-heading text-center mb-4">___________Добро пожаловать!___________</h1>
+            <p class="mb-1 text-center">
+                <strong>Этот сайт создан для приятной игры в игру на ПК R.E.P.O.</strong>
+            </p>
+            <p class="mb-5 text-center">
+                Если вы играете или играли в эту игру, то скорее всего знаете, что найти команду не всегда просто, а иногда вообще не получается, поэтому я решил создать сайт, чтоб облегчить данную задачу, а бонусом добавить общий чат, в котором можно пообщаться или узнать новое о игре
+            </p>
+
+            <h3 class="index-heading mb-4">___________Почему не дает перейти на вкладки?___________</h3>
+            <p class="mb-3 text-center">
+                <strong>Внимание!</strong> Если вы хотите начать общение или найти свою команду, то вам придется зарегистрироваться или войти в аккаунт
+            </p>
+
+        </div>
+    </div>
+</div>
+
+<footer class="bd-footer py-4 py-md-5 mt-5" style="background-color: var(--bg-primary); border-top: 1px solid var(--border-color);">
+  <div class="container py-4 px-4">
+    <div class="row">
+      <div class="col-lg-3 mb-3">
+        <a class="d-inline-flex align-items-center mb-2 text-decoration-none" href="/">
+          <span class="fs-5" style="color: #ffffff;">Noname</span>
+        </a>
+        <ul class="list-unstyled small" style="color: var(--text-muted);">
+          <li class="mb-2">Разработано и создано со всей любовью</li>
+          <li class="mb-2">Мы против токсичности в играх</li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2 offset-lg-1 mb-3">
+        <h5 class="footer-heading">Сделано</h5>
+        <ul class="list-unstyled" style="color: var(--text-muted);">
+          <li>@anski1 в 2026</li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2 offset-lg-1 mb-3">
+        <h5 class="footer-heading">Поддержка</h5>
+        <ul class="list-unstyled" style="color: var(--text-muted);">
+          <li>jura.pustovalov2010a@gmail.com</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+{% endblock %}

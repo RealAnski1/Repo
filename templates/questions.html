@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Вопросы
+{% endblock %}
+
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h2 class="mb-4">Вопросы сообщества</h2>
+            
+            {% if current_user.is_authenticated %}
+            <!-- Форма создания вопроса -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="POST" action="/questions/create">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Задайте вопрос</label>
+                            <input type="text" class="form-control" id="title" name="title" required placeholder="Например: Как пройти первый уровень?">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Опубликовать вопрос</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <strong>Войдите в аккаунт</strong>, чтобы задавать вопросы.
+            </div>
+            {% endif %}
+
+            <!-- Список вопросов -->
+            <h4 class="mb-3">Все вопросы</h4>
+            
+            <div class="questions-list">
+                {% if questions %}
+                    {% for item in questions %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title">
+                                        <a href="/questions/{{ item.question.id }}" class="text-decoration-none">
+                                            {{ item.question.title }}
+                                        </a>
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        Автор: <a href="/profile/{{ item.question.user_id }}" class="text-decoration-none">{{ item.question.username }}</a>
+                                        {% if item.question.user.admin %}
+                                            <span class="badge bg-danger">Админ</span>
+                                        {% endif %}
+                                        <br>
+                                        <span class="badge bg-info">💬 {{ item.replies_count }} ответов</span>
+                                    </p>
+                                </div>
+                                {% if current_user.is_authenticated and (current_user.id == item.question.user_id or current_user.admin) %}
+                                <form method="POST" action="/questions/{{ item.question.id }}/delete" class="ms-2">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Удалить этот вопрос?')" title="Удалить">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-secondary">
+                        Пока нет вопросов. Задайте первый!
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

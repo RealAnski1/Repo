@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Поиск команды
+{% endblock %}
+{% block menu %}
+
+{% endblock %}
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h2 class="mb-4">Поиск команды</h2>
+
+            {% if current_user.is_authenticated %}
+            <!-- Форма создания анкеты -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Создать анкету</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/team/create">
+                        <div class="mb-3">
+                            <label for="lobby_code" class="form-label">Код команды или название лобби</label>
+                            <input type="text" class="form-control" id="lobby_code" name="lobby_code" required placeholder="Например: TEAM123 или Веселая команда">
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="form-label">Количество игроков</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="players_count" id="players2" value="2" required>
+                                <label class="btn btn-outline-primary" for="players2">2</label>
+
+                                <input type="radio" class="btn-check" name="players_count" id="players3" value="3">
+                                <label class="btn btn-outline-primary" for="players3">3</label>
+
+                                <input type="radio" class="btn-check" name="players_count" id="players4" value="4">
+                                <label class="btn btn-outline-primary" for="players4">4</label>
+
+                                <input type="radio" class="btn-check" name="players_count" id="players5" value="5">
+                                <label class="btn btn-outline-primary" for="players5">5</label>
+
+                                <input type="radio" class="btn-check" name="players_count" id="players6" value="6">
+                                <label class="btn btn-outline-primary" for="players6">6</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Язык команды</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="language" id="lang_ru" value="Русский" required>
+                                <label class="btn btn-outline-success" for="lang_ru">Русский</label>
+
+                                <input type="radio" class="btn-check" name="language" id="lang_en" value="Английский">
+                                <label class="btn btn-outline-success" for="lang_en">Английский</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Тип игры</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="game_type" id="type_fun" value="Развлечение" required>
+                                <label class="btn btn-outline-info" for="type_fun">Развлечение</label>
+
+                                <input type="radio" class="btn-check" name="game_type" id="type_serious" value="Прохождение">
+                                <label class="btn btn-outline-info" for="type_serious">Прохождение</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Создать анкету</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <strong>Войдите в аккаунт</strong>, чтобы создавать анкеты для поиска команды.
+            </div>
+            {% endif %}
+
+            <!-- Список анкет -->
+            <h4 class="mb-3">Активные анкеты</h4>
+            <p class="text-muted small">Анкеты автоматически удаляются через 30 минут</p>
+
+            <div class="lobbies-list">
+                {% if lobbies %}
+                    <div class="row">
+                        {% for lobby in lobbies %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title mb-0">{{ lobby.lobby_code }}</h5>
+                                        {% if current_user.is_authenticated and current_user.admin %}
+                                        <form method="POST" action="/team/delete/{{ lobby.id }}" class="ms-2">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Удалить эту анкету?')">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                    <h6 class="card-subtitle mb-3 text-muted">
+                                        Создал: {{ lobby.username }}
+                                        {% if lobby.user.admin %}
+                                            <span class="badge bg-danger">Админ</span>
+                                        {% endif %}
+                                    </h6>
+                                    <ul class="list-unstyled">
+                                        <li><strong>Игроков:</strong> <span class="badge bg-primary">{{ lobby.players_count }}</span></li>
+                                        <li><strong>Язык:</strong> <span class="badge bg-success">{{ lobby.language }}</span></li>
+                                        <li><strong>Тип игры:</strong> <span class="badge bg-info">{{ lobby.game_type }}</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-secondary">
+                        Пока нет активных анкет. Создайте первую!
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

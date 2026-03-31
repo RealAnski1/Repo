@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Управление банами
+{% endblock %}
+
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h2 class="mb-4">Управление банами</h2>
+
+            <!-- Активные баны -->
+            <h4 class="mb-3">Активные баны ({{ active_bans|length }})</h4>
+            {% if active_bans %}
+            <div class="table-responsive mb-5">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>Пользователь</th>
+                            <th>Причина</th>
+                            <th>Забанил</th>
+                            <th>Дата бана</th>
+                            <th>Истекает</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ban in active_bans %}
+                        <tr>
+                            <td>
+                                <a href="/profile/{{ ban.user_id }}" class="text-decoration-none">
+                                    {{ ban.user.username }}
+                                </a>
+                            </td>
+                            <td>{{ ban.reason }}</td>
+                            <td>{{ ban.admin.username }}</td>
+                            <td>{{ ban.created_at|strftime }}</td>
+                            <td>{{ ban.expires_at|strftime }}</td>
+                            <td>
+                                <form method="POST" action="/admin/unban/{{ ban.id }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Разбанить пользователя {{ ban.user.username }}?')">
+                                        Разбанить
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info mb-5">
+                Нет активных банов
+            </div>
+            {% endif %}
+
+            <!-- История банов -->
+            <h4 class="mb-3">История банов ({{ expired_bans|length }})</h4>
+            {% if expired_bans %}
+            <div class="table-responsive">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>Пользователь</th>
+                            <th>Причина</th>
+                            <th>Забанил</th>
+                            <th>Дата бана</th>
+                            <th>Истек</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ban in expired_bans %}
+                        <tr class="text-muted">
+                            <td>
+                                <a href="/profile/{{ ban.user_id }}" class="text-decoration-none">
+                                    {{ ban.user.username }}
+                                </a>
+                            </td>
+                            <td>{{ ban.reason }}</td>
+                            <td>{{ ban.admin.username }}</td>
+                            <td>{{ ban.created_at|strftime }}</td>
+                            <td>{{ ban.expires_at|strftime }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                История банов пуста
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
