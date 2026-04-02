@@ -57,7 +57,9 @@ https://docs.google.com/presentation/d/1Atp_GRLcoGoUXrs5bP3Vi2bAgIa2Ty6CztDQ1Lke
 
 ```text
 .
-├─ __init__.py          # Основное Flask‑приложение, модели, маршруты
+├─ __init__.py  # Основное Flask‑приложение, модели, маршруты
+├─ api.py  
+├─ api_example.py  
 ├─ requirements.txt     # Список зависимостей
 ├─ instance/
 │  └─ main.db           # База данных SQLite
@@ -74,6 +76,7 @@ https://docs.google.com/presentation/d/1Atp_GRLcoGoUXrs5bP3Vi2bAgIa2Ty6CztDQ1Lke
 │  └─ registration.html
 └─ static/
    └─ img/
+
 ```
 
 **Основные модели** (см. `__init__.py`):
@@ -134,8 +137,8 @@ https://docs.google.com/presentation/d/1Atp_GRLcoGoUXrs5bP3Vi2bAgIa2Ty6CztDQ1Lke
 Если используете GitHub:
 
 ```powershell
-git clone https://github.com/ivan-artemev24/Python-1-Artemev
-cd Python-1-Artemev
+git clone https://github.com/RealAnski1/Repo
+cd Repo
 ```
 
 #### 2. Создание и активация виртуального окружения
@@ -184,20 +187,16 @@ API подключено в `__init__.py` через функцию `init_api(ap
 
 Основные эндпоинты:
 
-- **GET `/api/news`**
-  - список всех новостей;
+- **GET `/api/profile`**
+  - список пользователей;
   - ответ в JSON: `{ "ok": true, "items": [...] }`.
-- **GET `/api/news/<id>`**
-  - получение одной новости по ID;
+- **GET `/api/profile/<id>`**
+  - получение одного человека;
   - `404`, если не найдено.
-- **POST `/api/auth/login`**
-  - JSON‑тело: `{ "username": "...", "password": "..." }`;
-  - при успехе авторизует пользователя в сессии (`login_user`).
-- **POST `/api/news`** (только админ, требуются cookies сессии)
-  - JSON‑тело: `{ "title": "...", "intro": "...", "text": "..." }`;
-  - создаёт новость.
-- **DELETE `/api/news/<id>`** (только админ)
-  - удаляет новость по ID.
+- **POST `/api/community`**
+  - получение всех сообщений
+- **POST `/api/community/<id>`** 
+  - получение конкретного сообщения
 
 Пример работы с API есть в скрипте `api_example.py`:
 
