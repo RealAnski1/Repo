@@ -840,6 +840,10 @@ def unban_user(ban_id):
     return redirect("/admin/bans")
 
 
+
+from api import create_api_blueprint
+app.register_blueprint(create_api_blueprint(db, User, ChatMessage, MessageLike, UserReputation, Ban))
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
