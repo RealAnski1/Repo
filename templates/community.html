@@ -12,7 +12,7 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <h2 class="mb-4">Чат сообщества</h2>
+            <h2 class="repo-page-heading mb-4">Чат сообщества</h2>
 
             <!-- Форма отправки сообщения -->
             <div class="card mb-4">
@@ -37,130 +37,9 @@
                 </div>
             </div>
 
-            <!-- Список сообщений -->
+            <!-- Список сообщений (разметка в partial для автообновления) -->
             <div class="messages-list">
-                {% if messages %}
-                    {% for msg in messages %}
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="d-flex flex-grow-1">
-                                    <!-- Аватарка -->
-                                    <div class="me-3">
-                                        {% if msg.user.avatar %}
-                                            <img src="{{ url_for('static', filename='avatars/' + msg.user.avatar) }}" alt="Avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-                                        {% else %}
-                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px;">
-                                                {{ msg.username[0].upper() }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <!-- Сообщение -->
-                                    <div class="flex-grow-1">
-                                        <h6 class="card-subtitle mb-2 text-muted">
-                                            <a href="/profile/{{ msg.user_id }}" class="text-decoration-none">{{ msg.username }}</a>
-                                            {% if msg.user.admin %}
-                                                <span class="badge bg-danger">Админ</span>
-                                            {% endif %}
-                                        </h6>
-
-                                        <!-- Цитируемое сообщение -->
-                                        {% if msg.reply_to_id and msg.reply_to %}
-                                        <div class="border-start border-3 border-primary ps-2 mb-2 small text-muted bg-light p-2">
-                                            <strong>{{ msg.reply_to.username }}:</strong>
-                                            {{ msg.reply_to.text[:100] }}{% if msg.reply_to.text|length > 100 %}...{% endif %}
-                                        </div>
-                                        {% elif msg.reply_to_id %}
-                                        <div class="border-start border-3 border-secondary ps-2 mb-2 small text-muted bg-light p-2">
-                                            <em>Сообщение удалено</em>
-                                        </div>
-                                        {% endif %}
-
-                                        <p class="card-text">{{ msg.text }}</p>
-                                        <div class="mt-2">
-                                            <small class="text-muted">
-                                                <span class="badge bg-secondary">❤️ {{ msg.likes|length }}</span>
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Кнопки действий -->
-                                <div class="d-flex gap-1 ms-2">
-                                    {% if current_user.id != msg.user_id %}
-                                    <button type="button" class="btn btn-sm btn-outline-primary reply-btn"
-                                            data-msg-id="{{ msg.id }}"
-                                            data-username="{{ msg.username }}"
-                                            data-text="{{ msg.text }}"
-                                            title="Ответить">
-                                        ↩️
-                                    </button>
-                                    <form method="POST" action="/community/like/{{ msg.id }}">
-                                        <button type="submit" class="btn btn-sm {% if user_likes.get(msg.id) %}btn-danger{% else %}btn-outline-danger{% endif %}" title="Лайк">
-                                            ❤️
-                                        </button>
-                                    </form>
-                                    {% endif %}
-                                    {% if current_user.admin and current_user.id != msg.user_id and not msg.user.admin %}
-                                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#banModal{{ msg.id }}" title="Забанить">
-                                        🚩
-                                    </button>
-                                    {% endif %}
-                                    {% if current_user.id == msg.user_id or current_user.admin %}
-                                    <form method="POST" action="/community/delete/{{ msg.id }}">
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Удалить это сообщение?')" title="Удалить">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </form>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Модальное окно бана -->
-                    {% if current_user.admin and current_user.id != msg.user_id and not msg.user.admin %}
-                    <div class="modal fade" id="banModal{{ msg.id }}" tabindex="-1">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Забанить пользователя {{ msg.username }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <form method="POST" action="/ban/{{ msg.user_id }}">
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label class="form-label">Срок бана</label>
-                                            <select class="form-select" name="duration" required>
-                                                <option value="day">1 день</option>
-                                                <option value="week">1 неделя</option>
-                                                <option value="month">1 месяц</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Причина</label>
-                                            <select class="form-select" name="reason" required>
-                                                <option value="Нехорошая аватарка">Нехорошая аватарка</option>
-                                                <option value="Неподобающее поведение в чате">Неподобающее поведение в чате</option>
-                                                <option value="Спам">Спам</option>
-                                                <option value="Оскорбление">Оскорбление</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                        <button type="submit" class="btn btn-danger">Забанить</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <div class="alert alert-info">
-                        Пока нет сообщений. Будьте первым!
-                    </div>
-                {% endif %}
+                {% include '_community_messages.html' %}
             </div>
         </div>
     </div>
@@ -168,20 +47,183 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Обработчик для кнопок ответа
-        document.querySelectorAll('.reply-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var msgId = this.getAttribute('data-msg-id');
-                var username = this.getAttribute('data-username');
-                var text = this.getAttribute('data-text');
+        var messageForm = document.getElementById('messageForm');
+        var messageTextarea = document.getElementById('message');
+        if (messageForm && messageTextarea) {
+            messageTextarea.addEventListener('keydown', function(e) {
+                if (e.key !== 'Enter' || e.shiftKey) {
+                    return;
+                }
+                if (e.isComposing) {
+                    return;
+                }
+                e.preventDefault();
+                if (typeof messageForm.requestSubmit === 'function') {
+                    messageForm.requestSubmit();
+                } else {
+                    messageForm.submit();
+                }
+            });
+        }
 
+        var messagesList = document.querySelector('.messages-list');
+        var lastMessageIdsJson = JSON.stringify({{ messages|map(attribute='id')|list|tojson }});
+
+        function applyMessagesPartial(incomingIdsJson) {
+            var h0 = messagesList.offsetHeight;
+            return fetch('/community/messages_partial', { credentials: 'same-origin' })
+                .then(function(r) {
+                    if (!r.ok) {
+                        return Promise.reject();
+                    }
+                    return r.text();
+                })
+                .then(function(html) {
+                    messagesList.innerHTML = html;
+                    lastMessageIdsJson = incomingIdsJson;
+                    var h1 = messagesList.offsetHeight;
+                    window.scrollBy(0, h1 - h0);
+                });
+        }
+
+        messagesList.addEventListener('submit', function(e) {
+            var form = e.target;
+            if (form.tagName !== 'FORM' || (form.getAttribute('action') || '').indexOf('/community/delete/') === -1) {
+                return;
+            }
+            e.preventDefault();
+            if (!confirm('Удалить это сообщение?')) {
+                return;
+            }
+            var submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+            }
+            fetch(form.getAttribute('action'), {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+                .then(function(r) {
+                    var ct = (r.headers.get('content-type') || '');
+                    if (ct.indexOf('application/json') === -1) {
+                        return Promise.reject(new Error('not_json'));
+                    }
+                    return r.json().then(function(data) {
+                        return { ok: r.ok, data: data };
+                    });
+                })
+                .then(function(result) {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                    }
+                    if (!result.ok) {
+                        alert(result.data.error || 'Не удалось удалить сообщение');
+                        return;
+                    }
+                    var incoming = JSON.stringify(result.data.ids);
+                    return applyMessagesPartial(incoming);
+                })
+                .catch(function() {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                    }
+                    alert('Ошибка сети или сессия истекла. Обновите страницу.');
+                });
+        });
+
+        messagesList.addEventListener('click', function(e) {
+            var replyBtn = e.target.closest('.reply-btn');
+            if (replyBtn) {
+                var msgId = replyBtn.getAttribute('data-msg-id');
+                var username = replyBtn.getAttribute('data-username');
+                var text = replyBtn.getAttribute('data-text');
                 document.getElementById('replyToId').value = msgId;
                 document.getElementById('replyPreview').classList.remove('d-none');
                 var previewText = text.length > 100 ? text.substring(0, 100) + '...' : text;
                 document.getElementById('replyPreviewText').innerHTML = '<strong>' + username + ':</strong> ' + previewText;
                 document.getElementById('message').focus();
-            });
+                return;
+            }
+
+            var likeBtn = e.target.closest('.like-btn');
+            if (likeBtn) {
+                var id = likeBtn.getAttribute('data-message-id');
+                var button = likeBtn;
+                if (button.disabled) {
+                    return;
+                }
+                button.disabled = true;
+                fetch('/community/like/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                })
+                    .then(function(r) {
+                        var ct = (r.headers.get('content-type') || '');
+                        if (ct.indexOf('application/json') === -1) {
+                            return Promise.reject(new Error('not_json'));
+                        }
+                        return r.json().then(function(data) {
+                            return { ok: r.ok, data: data };
+                        });
+                    })
+                    .then(function(result) {
+                        button.disabled = false;
+                        if (!result.ok) {
+                            alert(result.data.error || 'Не удалось изменить лайк');
+                            return;
+                        }
+                        if (result.data.liked) {
+                            button.classList.remove('btn-outline-danger');
+                            button.classList.add('btn-danger');
+                        } else {
+                            button.classList.remove('btn-danger');
+                            button.classList.add('btn-outline-danger');
+                        }
+                        var badge = messagesList.querySelector('.like-count[data-message-id="' + id + '"]');
+                        if (badge) {
+                            badge.textContent = '\u2764\ufe0f ' + result.data.likes_count;
+                        }
+                    })
+                    .catch(function() {
+                        button.disabled = false;
+                        alert('Ошибка сети или сессия истекла. Обновите страницу.');
+                    });
+            }
         });
+
+        function syncMessagesFromServer() {
+            if (document.hidden) {
+                return;
+            }
+            fetch('/community/poll_ids', { credentials: 'same-origin' })
+                .then(function(r) {
+                    if (!r.ok) {
+                        return Promise.reject();
+                    }
+                    return r.json();
+                })
+                .then(function(data) {
+                    if (!data || !data.ids) {
+                        return;
+                    }
+                    var incoming = JSON.stringify(data.ids);
+                    if (incoming === lastMessageIdsJson) {
+                        return;
+                    }
+                    return applyMessagesPartial(incoming);
+                })
+                .catch(function() {});
+        }
+
+        setInterval(syncMessagesFromServer, 3500);
     });
 
     function cancelReply() {

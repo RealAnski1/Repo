@@ -11,24 +11,27 @@
 {% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-center">
-    <form class="needs-validation" method="POST" style="max-width: 400px; width: 100%;">
-        <div class="mb-3">
-            <label for="username" class="form-label">Логин</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-5">
+            <h1 class="repo-page-heading text-center">Вход</h1>
+            <p class="repo-page-subheading text-center mb-4">Авторизация оператора</p>
+            <div class="card">
+                <div class="card-body p-4">
+                    <form class="needs-validation" method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Логин</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button class="btn btn-primary w-100" type="submit">Войти</button>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label for="password" class="form-label">Пароль</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-
-        <div class="mb-3">
-            <button class="btn btn-primary" type="submit">Войти</button>
-        </div>
-    </form>
+    </div>
 </div>
-
 {% endblock %}
-
-

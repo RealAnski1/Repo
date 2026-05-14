@@ -1,56 +1,111 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Главная страница
+Главная — REPOHUB
 {% endblock %}
 
+{% block main_class %}container-fluid px-0 flex-grow-1 d-flex flex-column{% endblock %}
+
 {% block main %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-
-            <h1 class="index-heading text-center mb-4">___________Добро пожаловать!___________</h1>
-            <p class="mb-1 text-center">
-                <strong>Этот сайт создан для приятной игры в игру на ПК R.E.P.O.</strong>
+<div class="home-repo flex-grow-1 d-flex flex-column">
+    <!-- Герой -->
+    <section class="home-repo-hero position-relative text-center">
+        <div class="home-repo-hero-grid" aria-hidden="true"></div>
+        <div class="home-repo-scanlines" aria-hidden="true"></div>
+        <div class="container position-relative py-5 home-repo-hero-inner">
+            <p class="home-repo-tag font-monospace mb-3">
+                <span class="home-repo-pulse"></span> UPLINK · СИСТЕМА В НОРМЕ
             </p>
-            <p class="mb-5 text-center">
-                Если вы играете или играли в эту игру, то скорее всего знаете, что найти команду не всегда просто, а иногда вообще не получается, поэтому я решил создать сайт, чтоб облегчить данную задачу, а бонусом добавить общий чат, в котором можно пообщаться или узнать новое о игре
+            <h1 class="home-repo-title mb-3">
+                <span class="home-repo-title-main">R.E.P.O.</span>
+                <span class="home-repo-title-hub">HUB</span>
+            </h1>
+            <p class="home-repo-lead mx-auto mb-4">
+                Точка сбора операторов: команда, чат и вопросы по игре <strong class="text-white">R.E.P.O.</strong> на ПК
             </p>
-
-            <h3 class="index-heading mb-4">___________Почему не дает перейти на вкладки?___________</h3>
-            <p class="mb-3 text-center">
-                <strong>Внимание!</strong> Если вы хотите начать общение или найти свою команду, то вам придется зарегистрироваться или войти в аккаунт
-            </p>
-
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                {% if current_user.is_authenticated %}
+                <a href="/team" class="btn home-repo-btn-primary btn-lg px-4">Поиск команды</a>
+                <a href="/community" class="btn home-repo-btn-ghost btn-lg px-4">Общение</a>
+                {% else %}
+                <a href="/registration" class="btn home-repo-btn-primary btn-lg px-4">Регистрация</a>
+                <a href="/login" class="btn home-repo-btn-ghost btn-lg px-4">Вход</a>
+                {% endif %}
+            </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<footer class="bd-footer py-4 py-md-5 mt-5" style="background-color: var(--bg-primary); border-top: 1px solid var(--border-color);">
-  <div class="container py-4 px-4">
-    <div class="row">
-      <div class="col-lg-3 mb-3">
-        <a class="d-inline-flex align-items-center mb-2 text-decoration-none" href="/">
-          <span class="fs-5" style="color: #ffffff;">Noname</span>
-        </a>
-        <ul class="list-unstyled small" style="color: var(--text-muted);">
-          <li class="mb-2">Разработано и создано со всей любовью</li>
-          <li class="mb-2">Мы против токсичности в играх</li>
-        </ul>
-      </div>
-      <div class="col-6 col-lg-2 offset-lg-1 mb-3">
-        <h5 class="footer-heading">Сделано</h5>
-        <ul class="list-unstyled" style="color: var(--text-muted);">
-          <li>@anski1 в 2026</li>
-        </ul>
-      </div>
-      <div class="col-6 col-lg-2 offset-lg-1 mb-3">
-        <h5 class="footer-heading">Поддержка</h5>
-        <ul class="list-unstyled" style="color: var(--text-muted);">
-          <li>jura.pustovalov2010a@gmail.com</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</footer>
+    <!-- Контент -->
+    <section class="home-repo-body flex-grow-1 py-5">
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-6">
+                    <article class="home-repo-panel h-100">
+                        <header class="home-repo-panel-head">
+                            <span class="home-repo-panel-dot"></span>
+                            <span class="font-monospace small text-uppercase">Брифинг</span>
+                        </header>
+                        <div class="home-repo-panel-body">
+                            <h2 class="home-repo-panel-title">Добро пожаловать</h2>
+                            <p class="home-repo-text mb-0">
+                                Если вы играете или играли в <strong>R.E.P.O.</strong>, знаете: найти команду не всегда просто.
+                                Этот сайт помогает с поиском группы, а ещё здесь есть общий чат — пообщаться и узнать новое об игре.
+                            </p>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-lg-6">
+                    <article class="home-repo-panel home-repo-panel--alert h-100">
+                        <header class="home-repo-panel-head home-repo-panel-head--warn">
+                            <span class="home-repo-panel-dot home-repo-panel-dot--warn"></span>
+                            <span class="font-monospace small text-uppercase">Предупреждение</span>
+                        </header>
+                        <div class="home-repo-panel-body">
+                            <h2 class="home-repo-panel-title">Доступ к разделам</h2>
+                            <p class="home-repo-text mb-0">
+                                Чтобы открыть <strong>общение</strong>, <strong>поиск команды</strong> и другие функции,
+                                нужно <strong>войти</strong> в аккаунт или <strong>зарегистрироваться</strong>.
+                            </p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <div class="row mt-5 justify-content-center">
+                <div class="col-lg-10">
+                    <div class="home-repo-strip font-monospace text-center small">
+                        <span>RECLAIM</span>
+                        <span class="home-repo-strip-sep">//</span>
+                        <span>EXTRACT</span>
+                        <span class="home-repo-strip-sep">//</span>
+                        <span>PROFIT</span>
+                        <span class="home-repo-strip-sep">//</span>
+                        <span class="text-white">REPOHUB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="home-repo-footer mt-auto">
+        <div class="container py-5">
+            <div class="row g-4 align-items-start">
+                <div class="col-md-4">
+                    <div class="home-repo-footer-brand font-monospace mb-3">REPO<span class="text-white">HUB</span></div>
+                    <p class="home-repo-footer-muted small mb-0">
+                        Сделано для сообщества игроков R.E.P.O. Без токсичности — только честный кооп.
+                    </p>
+                </div>
+                <div class="col-6 col-md-4 col-lg-2 offset-lg-1">
+                    <h3 class="home-repo-footer-heading font-monospace text-uppercase small">Кредиты</h3>
+                    <p class="home-repo-footer-muted small mb-0">@anski1 · 2026</p>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <h3 class="home-repo-footer-heading font-monospace text-uppercase small">Связь</h3>
+                    <p class="home-repo-footer-muted small mb-0">jura.pustovalov2010a@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
 {% endblock %}

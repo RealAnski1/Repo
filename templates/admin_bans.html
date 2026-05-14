@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block main %}
-<div class="container mt-4">
+<div class="container mt-4" id="admin-bans-root">
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <h2 class="mb-4">Управление банами</h2>
+            <h2 class="repo-page-heading mb-4">Управление банами</h2>
 
             <!-- Активные баны -->
-            <h4 class="mb-3">Активные баны ({{ active_bans|length }})</h4>
+            <h4 class="repo-page-subheading mb-3">Активные баны ({{ active_bans|length }})</h4>
             {% if active_bans %}
             <div class="table-responsive mb-5">
                 <table class="table table-dark table-striped">
@@ -56,9 +56,9 @@
             {% endif %}
 
             <!-- История банов -->
-            <h4 class="mb-3">История банов ({{ expired_bans|length }})</h4>
+            <h4 class="repo-page-subheading mb-3" id="expired-bans-heading">История банов ({{ expired_bans|length }})</h4>
             {% if expired_bans %}
-            <div class="table-responsive">
+            <div class="table-responsive" id="expired-bans-table-wrap">
                 <table class="table table-dark table-striped">
                     <thead>
                         <tr>
@@ -67,9 +67,10 @@
                             <th>Забанил</th>
                             <th>Дата бана</th>
                             <th>Истек</th>
+                            <th>Действие</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="expired-bans-tbody">
                         {% for ban in expired_bans %}
                         <tr class="text-muted">
                             <td>
@@ -81,17 +82,95 @@
                             <td>{{ ban.admin.username }}</td>
                             <td>{{ ban.created_at|strftime }}</td>
                             <td>{{ ban.expires_at|strftime }}</td>
+                            <td>
+                                <form method="POST" action="/admin/bans/{{ ban.id }}/delete" class="admin-ban-delete-form d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        Удалить
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
             {% else %}
-            <div class="alert alert-info">
+            <div class="alert alert-info" id="expired-bans-empty">
                 История банов пуста
             </div>
             {% endif %}
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var root = document.getElementById('admin-bans-root');
+        if (!root) {
+            return;
+        }
+        root.addEventListener('submit', function(e) {
+            var form = e.target;
+            if (form.tagName !== 'FORM' || !form.classList.contains('admin-ban-delete-form')) {
+                return;
+            }
+            e.preventDefault();
+            if (!confirm('Удалить эту запись из истории банов?')) {
+                return;
+            }
+            var btn = form.querySelector('button[type="submit"]');
+            if (btn) {
+                btn.disabled = true;
+            }
+            fetch(form.getAttribute('action'), {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+                .then(function(r) {
+                    var ct = (r.headers.get('content-type') || '');
+                    if (ct.indexOf('application/json') === -1) {
+                        return Promise.reject(new Error('not_json'));
+                    }
+                    return r.json().then(function(data) {
+                        return { ok: r.ok, data: data };
+                    });
+                })
+                .then(function(result) {
+                    if (btn) {
+                        btn.disabled = false;
+                    }
+                    if (!result.ok) {
+                        alert(result.data.error || 'Не удалось удалить запись');
+                        return;
+                    }
+                    var tr = form.closest('tr');
+                    if (tr) {
+                        tr.remove();
+                    }
+                    var tbody = document.getElementById('expired-bans-tbody');
+                    var heading = document.getElementById('expired-bans-heading');
+                    if (tbody && heading) {
+                        var n = tbody.querySelectorAll('tr').length;
+                        heading.textContent = 'История банов (' + n + ')';
+                        if (n === 0) {
+                            var wrap = document.getElementById('expired-bans-table-wrap');
+                            if (wrap) {
+                                wrap.outerHTML = '<div class="alert alert-info" id="expired-bans-empty">История банов пуста</div>';
+                            }
+                        }
+                    }
+                })
+                .catch(function() {
+                    if (btn) {
+                        btn.disabled = false;
+                    }
+                    alert('Ошибка сети или сессия истекла. Обновите страницу.');
+                });
+        });
+    });
+</script>
 {% endblock %}

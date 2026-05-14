@@ -1,35 +1,72 @@
-/* ===== FACEIT-style dark theme ===== */
+/* ===== REPOHUB — глобальная тема R.E.P.O. (неон, индастриал) ===== */
 
 :root {
-    --bg-primary: #1f1f1f;
-    --bg-secondary: #161616;
-    --bg-card: #2b2b2b;
-    --bg-card-header: #333333;
-    --border-color: #3a3a3a;
-    --accent: #ff5500;
-    --accent-hover: #e64d00;
-    --text-primary: #ffffff;
-    --text-muted: #a0a0a0;
+    --repo-cyan: #05d9e8;
+    --repo-cyan-muted: rgba(5, 217, 232, 0.5);
+    --repo-magenta: #ff2a6d;
+    --repo-magenta-dark: #c41e55;
+    --repo-bg-deep: #06060a;
+    --bg-primary: #0e0e14;
+    --bg-secondary: #0a0a10;
+    --bg-card: #111118;
+    --bg-card-header: #16161f;
+    --border-color: rgba(5, 217, 232, 0.22);
+    --accent: #ff2a6d;
+    --accent-hover: #e83068;
+    --accent-glow: rgba(255, 42, 109, 0.38);
+    --text-primary: #f0f0f5;
+    --text-muted: #9698ac;
+    --font-display: "Orbitron", system-ui, sans-serif;
+    --font-mono: "Share Tech Mono", ui-monospace, monospace;
 }
 
-/* Основной фон */
-body {
-    background-color: var(--bg-secondary) !important;
+body.theme-repo {
+    background: linear-gradient(165deg, var(--repo-bg-deep) 0%, var(--bg-secondary) 42%, #080810 100%) fixed !important;
     color: var(--text-primary) !important;
-    font-family: 'Inter', 'Segoe UI', sans-serif !important;
+    font-family: "Inter", "Segoe UI", sans-serif !important;
 }
 
-/* ===== Шапка в стиле FACEIT ===== */
+/* Заголовки разделов (подключайте класс к h1/h2) */
+.repo-page-heading {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: clamp(1.25rem, 2.8vw, 1.65rem);
+    padding-bottom: 0.65rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 2px solid var(--repo-cyan);
+    text-shadow: 0 0 20px rgba(5, 217, 232, 0.12);
+}
+
+.repo-page-subheading {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--repo-cyan-muted);
+    margin-bottom: 0.75rem;
+}
+
+/* Карточка-обёртка для форм входа/регистрации */
+.repo-auth-card {
+    max-width: 440px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Шапка */
 .site-header {
-    background-color: var(--bg-primary);
+    background: linear-gradient(180deg, #12121a 0%, var(--bg-primary) 100%);
     border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 1px 20px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.55), 0 0 48px rgba(5, 217, 232, 0.05);
     position: sticky;
     top: 0;
     z-index: 1000;
 }
 
-/* Логотип */
 .header-logo {
     position: relative;
     display: flex;
@@ -37,25 +74,25 @@ body {
     min-width: 130px;
 }
 
-/* Оранжевое пятно-свечение за логотипом */
 .logo-glow {
     position: absolute;
     left: -10px;
     top: 50%;
     transform: translateY(-50%);
-    width: 70px;
-    height: 70px;
-    background: radial-gradient(circle, rgba(255, 85, 0, 0.55) 0%, rgba(255, 85, 0, 0.15) 50%, transparent 75%);
+    width: 76px;
+    height: 76px;
+    background: radial-gradient(circle, rgba(255, 42, 109, 0.45) 0%, rgba(5, 217, 232, 0.12) 42%, transparent 72%);
     border-radius: 50%;
     pointer-events: none;
-    filter: blur(6px);
+    filter: blur(8px);
 }
 
 .logo-text {
     position: relative;
-    font-size: 1.3rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     color: #ffffff !important;
     text-transform: uppercase;
 }
@@ -64,80 +101,81 @@ body {
     color: var(--accent) !important;
 }
 
-/* Навигация в шапке */
 .header-nav .nav-link {
     color: var(--text-muted) !important;
     font-weight: 500;
-    font-size: 0.875rem;
-    border-radius: 4px;
+    font-size: 0.8rem;
+    border-radius: 2px;
     padding: 6px 12px;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
     transition: color 0.2s, background 0.2s;
 }
 
 .header-nav .nav-link.active {
     background-color: transparent !important;
     color: #ffffff !important;
-    border-bottom: 2px solid var(--accent);
+    border-bottom: 2px solid var(--repo-cyan);
     border-radius: 0;
 }
 
 .header-nav .nav-link:hover:not(.active) {
-    background-color: rgba(255, 85, 0, 0.12) !important;
-    color: var(--accent) !important;
+    background-color: rgba(5, 217, 232, 0.1) !important;
+    color: var(--repo-cyan) !important;
 }
 
-/* Кнопки шапки */
 .btn-header-ghost {
     background: transparent !important;
-    border: 1px solid rgba(255,255,255,0.25) !important;
-    color: #ffffff !important;
-    font-size: 0.8rem;
+    border: 1px solid rgba(5, 217, 232, 0.35) !important;
+    color: #e8f4f6 !important;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
     font-weight: 600;
     padding: 6px 16px;
-    border-radius: 4px;
+    border-radius: 2px;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    transition: border-color 0.2s, background 0.2s;
+    letter-spacing: 0.08em;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
     text-decoration: none !important;
 }
 
 .btn-header-ghost:hover {
-    border-color: rgba(255,255,255,0.6) !important;
-    background: rgba(255,255,255,0.07) !important;
+    border-color: var(--repo-cyan) !important;
+    background: rgba(5, 217, 232, 0.08) !important;
     color: #ffffff !important;
+    box-shadow: 0 0 16px rgba(5, 217, 232, 0.15);
 }
 
 .btn-header-danger {
-    border-color: rgba(220, 53, 69, 0.5) !important;
-    color: #f08090 !important;
+    border-color: rgba(255, 42, 109, 0.45) !important;
+    color: #ff8ba8 !important;
 }
 
 .btn-header-danger:hover {
-    border-color: #dc3545 !important;
-    background: rgba(220, 53, 69, 0.15) !important;
-    color: #ff6b7a !important;
+    border-color: var(--accent) !important;
+    background: rgba(255, 42, 109, 0.12) !important;
+    color: #ffb3c4 !important;
 }
 
 .btn-header-accent {
-    background: var(--accent) !important;
-    border: 1px solid var(--accent) !important;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--repo-magenta-dark) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
     color: #ffffff !important;
-    font-size: 0.8rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
     font-weight: 700;
     padding: 6px 16px;
-    border-radius: 4px;
+    border-radius: 2px;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    transition: background 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.08em;
+    box-shadow: 0 0 22px var(--accent-glow);
+    transition: box-shadow 0.2s, filter 0.2s;
     text-decoration: none !important;
 }
 
 .btn-header-accent:hover {
-    background: var(--accent-hover) !important;
-    border-color: var(--accent-hover) !important;
-    box-shadow: 0 0 12px rgba(255, 85, 0, 0.45) !important;
+    filter: brightness(1.06);
+    box-shadow: 0 0 30px var(--accent-glow) !important;
     color: #ffffff !important;
 }
 
@@ -146,19 +184,24 @@ body {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-color) !important;
     color: var(--text-primary) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    border-radius: 4px !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.45),
+        0 18px 42px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .card-header {
     background-color: var(--bg-card-header) !important;
     border-bottom: 1px solid var(--border-color) !important;
     font-weight: 600;
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
 }
 
 .card-header.bg-primary {
-    background-color: var(--accent) !important;
-    border-bottom-color: var(--accent-hover) !important;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--repo-magenta-dark) 100%) !important;
+    border-bottom-color: rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Алерты */
@@ -166,7 +209,11 @@ body {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-color) !important;
     color: var(--text-primary) !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
+}
+
+.theme-repo .alert .btn-close {
+    filter: invert(1) grayscale(1) brightness(1.2);
 }
 
 .alert-success {
@@ -176,14 +223,14 @@ body {
 }
 
 .alert-info {
-    background-color: rgba(13, 202, 240, 0.15) !important;
-    border-color: #0dcaf0 !important;
-    color: #7de8f8 !important;
+    background-color: rgba(5, 217, 232, 0.1) !important;
+    border-color: rgba(5, 217, 232, 0.35) !important;
+    color: #8eedf8 !important;
 }
 
 .alert-warning {
-    background-color: rgba(255, 193, 7, 0.15) !important;
-    border-color: #ffc107 !important;
+    background-color: rgba(255, 176, 32, 0.12) !important;
+    border-color: rgba(255, 176, 32, 0.45) !important;
     color: #ffd454 !important;
 }
 
@@ -193,18 +240,24 @@ body {
     color: #f08090 !important;
 }
 
+.alert-secondary {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
+
 /* Формы */
 .form-control, .form-select {
     background-color: var(--bg-secondary) !important;
     border: 1px solid var(--border-color) !important;
     color: var(--text-primary) !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
 }
 
 .form-control:focus, .form-select:focus {
     background-color: var(--bg-secondary) !important;
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 0 0.2rem rgba(255, 85, 0, 0.25) !important;
+    border-color: var(--repo-cyan) !important;
+    box-shadow: 0 0 0 0.2rem rgba(5, 217, 232, 0.22) !important;
     color: var(--text-primary) !important;
 }
 
@@ -214,92 +267,101 @@ body {
     font-weight: 500;
 }
 
-/* Кнопки - основные (оранжевые) */
+/* Кнопки */
 .btn-primary, .btn-success {
-    background-color: var(--accent) !important;
-    border-color: var(--accent) !important;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--repo-magenta-dark) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: #ffffff !important;
+    font-family: var(--font-display);
     font-weight: 600;
-    border-radius: 6px !important;
+    letter-spacing: 0.05em;
+    border-radius: 4px !important;
+    box-shadow: 0 0 18px var(--accent-glow);
 }
 
 .btn-primary:hover, .btn-success:hover {
-    background-color: var(--accent-hover) !important;
-    border-color: var(--accent-hover) !important;
+    filter: brightness(1.08);
+    border-color: rgba(255, 255, 255, 0.18) !important;
 }
 
 .btn-outline-primary, .btn-outline-success {
     color: var(--accent) !important;
-    border-color: var(--accent) !important;
-    border-radius: 6px !important;
+    border-color: rgba(255, 42, 109, 0.55) !important;
+    border-radius: 4px !important;
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
 }
 
 .btn-outline-primary:hover, .btn-outline-success:hover {
-    background-color: var(--accent) !important;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--repo-magenta-dark) 100%) !important;
+    border-color: transparent !important;
     color: #ffffff !important;
 }
 
-/* Кнопки - вторичные (синие) */
 .btn-secondary {
-    background-color: #2d5be3 !important;
-    border-color: #2d5be3 !important;
-    border-radius: 6px !important;
+    background: linear-gradient(180deg, #124850 0%, #0c3538 100%) !important;
+    border: 1px solid rgba(5, 217, 232, 0.35) !important;
+    border-radius: 4px !important;
+    color: #e0f8fb !important;
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
 }
 
 .btn-secondary:hover {
-    background-color: #2450cc !important;
-    border-color: #2450cc !important;
-}
-
-.btn-outline-secondary {
-    color: #7a9ef5 !important;
-    border-color: #3a3a3a !important;
-    border-radius: 6px !important;
-}
-
-.btn-outline-secondary:hover {
-    background-color: #2d5be3 !important;
-    border-color: #2d5be3 !important;
+    background: linear-gradient(180deg, #165a64 0%, #0f4348 100%) !important;
+    border-color: var(--repo-cyan) !important;
     color: #ffffff !important;
 }
 
-/* Кнопки в группах (radio) */
+.btn-outline-secondary {
+    color: var(--repo-cyan) !important;
+    border-color: rgba(5, 217, 232, 0.4) !important;
+    border-radius: 4px !important;
+}
+
+.btn-outline-secondary:hover {
+    background: rgba(5, 217, 232, 0.12) !important;
+    border-color: var(--repo-cyan) !important;
+    color: #ffffff !important;
+}
+
 .btn-check:checked + .btn-outline-primary,
 .btn-check:checked + .btn-outline-success,
 .btn-check:checked + .btn-outline-info {
-    background-color: var(--accent) !important;
-    border-color: var(--accent) !important;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--repo-magenta-dark) 100%) !important;
+    border-color: transparent !important;
     color: #ffffff !important;
 }
 
 .btn-outline-info {
     color: #7de8f8 !important;
-    border-color: #0dcaf0 !important;
-    border-radius: 6px !important;
+    border-color: rgba(5, 217, 232, 0.5) !important;
+    border-radius: 4px !important;
 }
 
 .btn-outline-info:hover {
-    background-color: #0dcaf0 !important;
-    color: #000000 !important;
+    background: rgba(5, 217, 232, 0.2) !important;
+    color: #ffffff !important;
 }
 
 /* Бейджи */
 .badge.bg-primary, .badge.bg-success {
-    background-color: var(--accent) !important;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--repo-magenta-dark) 100%) !important;
 }
 
 .badge.bg-secondary {
-    background-color: #2d5be3 !important;
+    background-color: rgba(5, 217, 232, 0.2) !important;
+    color: var(--repo-cyan) !important;
 }
 
 .badge.bg-info {
-    background-color: #0dcaf0 !important;
-    color: #000000 !important;
+    background-color: rgba(5, 217, 232, 0.35) !important;
+    color: #0a0a10 !important;
 }
 
 /* Ссылки */
 a {
-    color: var(--accent) !important;
+    color: var(--repo-cyan) !important;
 }
 
 .text-decoration-none {
@@ -319,7 +381,8 @@ a {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-color) !important;
     color: var(--text-primary) !important;
-    border-radius: 10px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
 }
 
 .modal-header {
@@ -327,17 +390,27 @@ a {
     border-bottom: 1px solid var(--border-color) !important;
 }
 
+.modal-title {
+    font-family: var(--font-display);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 1rem;
+}
+
 .modal-footer {
     border-top: 1px solid var(--border-color) !important;
 }
 
-/* Цитата в чате */
+.border-start.border-primary {
+    border-color: var(--repo-cyan) !important;
+}
+
 .border-start {
-    border-color: var(--accent) !important;
+    border-color: var(--repo-cyan) !important;
 }
 
 .bg-light {
-    background-color: rgba(255,255,255,0.05) !important;
+    background-color: rgba(255, 255, 255, 0.04) !important;
     border-radius: 4px;
 }
 
@@ -352,14 +425,13 @@ a {
 }
 
 .table-striped > tbody > tr:nth-of-type(odd) > * {
-    background-color: rgba(255,255,255,0.04) !important;
+    background-color: rgba(5, 217, 232, 0.04) !important;
     color: var(--text-primary) !important;
 }
 
 .table > :not(caption) > * > * {
     border-color: var(--border-color) !important;
 }
-
 /* Скроллбар */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-secondary); }
@@ -368,16 +440,24 @@ a {
 
 /* ===== Профиль ===== */
 .profile-heading {
+    font-family: var(--font-display);
     color: #ffffff;
     font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     padding-bottom: 10px;
-    border-bottom: 2px solid var(--accent);
+    border-bottom: 2px solid var(--repo-cyan);
     margin-bottom: 20px;
+    text-shadow: 0 0 18px rgba(5, 217, 232, 0.1);
 }
 
 .profile-section-title {
+    font-family: var(--font-display);
     color: #ffffff;
     font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border-color);
     margin-bottom: 16px;
@@ -403,7 +483,295 @@ a {
     font-weight: 500;
 }
 
-/* ===== Главная страница ===== */
+/* ===== Главная страница (R.E.P.O. — неон, индастриал) ===== */
+.home-repo {
+    --repo-bg-deep: #06060a;
+    --repo-bg: #0c0c12;
+    --repo-surface: #111118;
+    --repo-border: rgba(5, 217, 232, 0.22);
+    --repo-magenta: #ff2a6d;
+    --repo-magenta-dim: rgba(255, 42, 109, 0.35);
+    --repo-cyan: #05d9e8;
+    --repo-cyan-dim: rgba(5, 217, 232, 0.12);
+    --repo-lime: #b8f018;
+    --repo-amber: #ffb020;
+    --repo-text: #c8cad8;
+    --repo-font-display: "Orbitron", system-ui, sans-serif;
+    --repo-font-mono: "Share Tech Mono", ui-monospace, monospace;
+    background: var(--repo-bg-deep);
+    color: var(--repo-text);
+    font-family: var(--repo-font-display);
+}
+
+.home-repo .font-monospace {
+    font-family: var(--repo-font-mono) !important;
+}
+
+.home-repo-hero {
+    background:
+        radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 42, 109, 0.18), transparent 55%),
+        radial-gradient(ellipse 80% 50% at 80% 60%, rgba(5, 217, 232, 0.08), transparent 50%),
+        linear-gradient(180deg, #0e0e16 0%, var(--repo-bg-deep) 100%);
+    border-bottom: 1px solid var(--repo-border);
+    overflow: hidden;
+}
+
+.home-repo-hero-inner {
+    padding-top: 3.5rem !important;
+    padding-bottom: 4rem !important;
+}
+
+@media (min-width: 992px) {
+    .home-repo-hero-inner {
+        padding-top: 5rem !important;
+        padding-bottom: 5.5rem !important;
+    }
+}
+
+.home-repo-hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(5, 217, 232, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(5, 217, 232, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 20%, transparent 75%);
+    pointer-events: none;
+}
+
+.home-repo-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.12) 2px,
+        rgba(0, 0, 0, 0.12) 4px
+    );
+    pointer-events: none;
+    opacity: 0.35;
+}
+
+.home-repo-tag {
+    font-family: var(--repo-font-mono);
+    color: var(--repo-cyan);
+    letter-spacing: 0.12em;
+    font-size: 0.8rem;
+}
+
+.home-repo-pulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+    background: var(--repo-lime);
+    box-shadow: 0 0 12px var(--repo-lime);
+    animation: home-repo-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes home-repo-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.home-repo-title {
+    font-family: var(--repo-font-display);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+.home-repo-title-main {
+    display: block;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    color: #fff;
+    text-shadow:
+        0 0 40px rgba(255, 42, 109, 0.45),
+        0 0 80px rgba(5, 217, 232, 0.2);
+}
+
+.home-repo-title-hub {
+    display: block;
+    font-size: clamp(1.25rem, 4vw, 2rem);
+    color: var(--repo-magenta);
+    letter-spacing: 0.35em;
+    margin-top: 0.25rem;
+}
+
+.home-repo-lead {
+    font-family: "Inter", system-ui, sans-serif;
+    max-width: 34rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--repo-text);
+}
+
+.home-repo-btn-primary {
+    font-family: var(--repo-font-display);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 2px;
+    background: linear-gradient(135deg, var(--repo-magenta) 0%, #c41e55 100%) !important;
+    color: #fff !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.12),
+        0 0 28px rgba(255, 42, 109, 0.35);
+    transition: transform 0.15s, box-shadow 0.2s;
+}
+
+.home-repo-btn-primary:hover {
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        0 0 40px rgba(255, 42, 109, 0.5);
+}
+
+.home-repo-btn-ghost {
+    font-family: var(--repo-font-display);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    border: 1px solid var(--repo-cyan) !important;
+    color: var(--repo-cyan) !important;
+    background: transparent !important;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.home-repo-btn-ghost:hover {
+    background: var(--repo-cyan-dim) !important;
+    color: #fff !important;
+    box-shadow: 0 0 24px rgba(5, 217, 232, 0.25);
+}
+
+.home-repo-body {
+    background: linear-gradient(180deg, var(--repo-bg-deep) 0%, var(--repo-bg) 40%, var(--repo-bg) 100%);
+}
+
+.home-repo-panel {
+    background: var(--repo-surface);
+    border: 1px solid var(--repo-border);
+    border-radius: 4px;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.5),
+        0 20px 50px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    overflow: hidden;
+}
+
+.home-repo-panel--alert {
+    border-color: rgba(255, 176, 32, 0.35);
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(255, 176, 32, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.home-repo-panel-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1rem;
+    background: rgba(5, 217, 232, 0.06);
+    border-bottom: 1px solid var(--repo-border);
+    color: var(--repo-cyan);
+    letter-spacing: 0.1em;
+}
+
+.home-repo-panel-head--warn {
+    background: rgba(255, 176, 32, 0.08);
+    border-bottom-color: rgba(255, 176, 32, 0.25);
+    color: var(--repo-amber);
+}
+
+.home-repo-panel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    background: var(--repo-cyan);
+    box-shadow: 0 0 10px var(--repo-cyan);
+}
+
+.home-repo-panel-dot--warn {
+    background: var(--repo-amber);
+    box-shadow: 0 0 10px var(--repo-amber);
+}
+
+.home-repo-panel-body {
+    padding: 1.5rem 1.25rem 1.75rem;
+}
+
+.home-repo-panel-title {
+    font-family: var(--repo-font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.home-repo-text {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--repo-text);
+}
+
+.home-repo-text strong {
+    color: #e8e9f0;
+}
+
+.home-repo-strip {
+    padding: 1rem 1.25rem;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(5, 217, 232, 0.15);
+    border-radius: 2px;
+    color: var(--repo-magenta-dim);
+    letter-spacing: 0.2em;
+}
+
+.home-repo-strip-sep {
+    margin: 0 0.75rem;
+    color: rgba(5, 217, 232, 0.35);
+}
+
+.home-repo-footer {
+    background: #050508;
+    border-top: 1px solid rgba(5, 217, 232, 0.12);
+}
+
+.home-repo-footer-brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--repo-magenta);
+}
+
+.home-repo-footer-heading {
+    color: var(--repo-cyan);
+    letter-spacing: 0.12em;
+    margin-bottom: 0.75rem;
+}
+
+.home-repo-footer-muted {
+    font-family: "Inter", system-ui, sans-serif;
+    color: rgba(200, 202, 216, 0.65);
+}
+
+/* Flash-сообщения на полноширинной главной (отступ от края) */
+main.container-fluid.px-0 > .alert {
+    margin-left: 1.25rem;
+    margin-right: 1.25rem;
+}
+
+/* Старый класс заголовков главной (оставлен на случай ссылок из кэша) */
 .index-heading {
     color: #ffffff;
     font-weight: 700;
@@ -415,10 +783,13 @@ a {
 
 /* ===== Футер ===== */
 .footer-heading {
+    font-family: var(--font-display);
     color: #ffffff;
     font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     padding-bottom: 6px;
-    border-bottom: 2px solid #dc3545;
+    border-bottom: 2px solid var(--repo-cyan);
     display: inline-block;
     margin-bottom: 12px;
 }

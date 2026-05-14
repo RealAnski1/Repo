@@ -3,7 +3,7 @@ import time
 import os
 from werkzeug.utils import secure_filename
 
-from flask import Flask, render_template, request, redirect, flash, session
+from flask import Flask, render_template, request, redirect, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -105,7 +105,7 @@ class MessageLike(db.Model):
     """Модель лайка на сообщение."""
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    message_id = db.Column(db.Integer, db.ForeignKey('chat_message.id'), nullable=False)
+    message_id = db.Column(db.Integer, db.ForeignKey('chat_message.id', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.Integer, default=lambda: int(time.time()))
     
     user = db.relationship('User', backref='likes_given')
@@ -355,6 +355,24 @@ def logout():
     return redirect("/")
 
 
+def _client_wants_json():
+    """True, если клиент ожидает JSON (fetch/AJAX), а не редирект с HTML."""
+    if (request.headers.get("X-Requested-With") or "").strip().lower() == "xmlhttprequest":
+        return True
+    accept = request.headers.get("Accept", "")
+    return "application/json" in accept
+
+
+def _community_messages_and_likes():
+    """Сообщения чата (от новых к старым) и множество id сообщений с лайком текущего пользователя."""
+    messages = ChatMessage.query.order_by(ChatMessage.created_at.desc()).all()
+    user_likes = {}
+    if current_user.is_authenticated:
+        likes = MessageLike.query.filter_by(user_id=current_user.id).all()
+        user_likes = {like.message_id: True for like in likes}
+    return messages, user_likes
+
+
 @app.route('/community', methods=["GET", "POST"])
 @login_required
 def community():
@@ -383,66 +401,106 @@ def community():
         flash("Сообщение отправлено", "success")
         return redirect("/community")
 
-    messages = ChatMessage.query.order_by(ChatMessage.created_at.desc()).all()
-    
-    # Получаем информацию о лайках текущего пользователя
-    user_likes = {}
-    if current_user.is_authenticated:
-        likes = MessageLike.query.filter_by(user_id=current_user.id).all()
-        user_likes = {like.message_id: True for like in likes}
-    
+    messages, user_likes = _community_messages_and_likes()
     return render_template("community.html", messages=messages, user_likes=user_likes)
+
+
+@app.route('/community/poll_ids', methods=["GET"])
+@login_required
+def community_poll_ids():
+    """Лёгкий опрос: id сообщений в порядке отображения (для автообновления чата)."""
+    if current_user.is_banned():
+        return jsonify({"error": "banned"}), 403
+    ids = [m.id for m in ChatMessage.query.order_by(ChatMessage.created_at.desc()).all()]
+    return jsonify({"ids": ids})
+
+
+@app.route('/community/messages_partial', methods=["GET"])
+@login_required
+def community_messages_partial():
+    """HTML-фрагмент списка сообщений (подставляется без перезагрузки страницы)."""
+    if current_user.is_banned():
+        return "", 403
+    messages, user_likes = _community_messages_and_likes()
+    return render_template("_community_messages.html", messages=messages, user_likes=user_likes)
 
 
 @app.route('/community/delete/<int:message_id>', methods=["POST"])
 @login_required
 def delete_message(message_id):
+    wants_json = _client_wants_json()
+
     message = db.session.get(ChatMessage, message_id)
     if not message:
+        if wants_json:
+            return jsonify({"error": "Сообщение не найдено"}), 404
         flash("Сообщение не найдено", "danger")
         return redirect("/community")
 
     # Проверка прав: либо автор сообщения, либо админ
     if message.user_id != current_user.id and not current_user.admin:
+        if wants_json:
+            return jsonify({"error": "У вас нет прав для удаления этого сообщения"}), 403
         flash("У вас нет прав для удаления этого сообщения", "danger")
         return redirect("/community")
 
+    # Иначе SQLite ругается на FK: сначала лайки, затем ссылки «ответ на это сообщение»
+    MessageLike.query.filter_by(message_id=message_id).delete(synchronize_session=False)
+    ChatMessage.query.filter_by(reply_to_id=message_id).update(
+        {"reply_to_id": None}, synchronize_session=False
+    )
     db.session.delete(message)
     db.session.commit()
-    flash("Сообщение удалено", "success")
-    return redirect("/community")
+    if not wants_json:
+        flash("Сообщение удалено", "success")
+        return redirect("/community")
+
+    ids = [m.id for m in ChatMessage.query.order_by(ChatMessage.created_at.desc()).all()]
+    return jsonify({"ok": True, "ids": ids})
 
 @app.route('/community/like/<int:message_id>', methods=["POST"])
 @login_required
 def like_message(message_id):
+    wants_json = _client_wants_json()
+
     message = db.session.get(ChatMessage, message_id)
     if not message:
+        if wants_json:
+            return jsonify({"error": "Сообщение не найдено"}), 404
         flash("Сообщение не найдено", "danger")
         return redirect("/community")
-    
+
     # Нельзя лайкать свои сообщения
     if message.user_id == current_user.id:
+        if wants_json:
+            return jsonify({"error": "Нельзя лайкать свои сообщения"}), 400
         flash("Нельзя лайкать свои сообщения", "warning")
         return redirect("/community")
-    
+
     # Проверяем, не поставлен ли уже лайк
     existing_like = MessageLike.query.filter_by(
         user_id=current_user.id,
         message_id=message_id
     ).first()
-    
+
     if existing_like:
-        # Убираем лайк
         db.session.delete(existing_like)
         db.session.commit()
-        flash("Лайк убран", "info")
+        liked = False
+        if not wants_json:
+            flash("Лайк убран", "info")
     else:
-        # Ставим лайк
         new_like = MessageLike(user_id=current_user.id, message_id=message_id)
         db.session.add(new_like)
         db.session.commit()
-        flash("Лайк поставлен", "success")
-    
+        liked = True
+        if not wants_json:
+            flash("Лайк поставлен", "success")
+
+    likes_count = MessageLike.query.filter_by(message_id=message_id).count()
+    if wants_json:
+        return jsonify({"ok": True, "liked": liked, "likes_count": likes_count})
+
     return redirect("/community")
 
 @app.route('/profile/<int:user_id>')
@@ -837,6 +895,45 @@ def unban_user(ban_id):
     db.session.commit()
     
     flash(f"Пользователь {ban.user.username} разбанен", "success")
+    return redirect("/admin/bans")
+
+
+@app.route('/admin/bans/<int:ban_id>/delete', methods=["POST"])
+@login_required
+def admin_delete_ban(ban_id):
+    wants_json = _client_wants_json()
+
+    if not current_user.admin:
+        if wants_json:
+            return jsonify({"error": "Нет прав"}), 403
+        flash("У вас нет прав для выполнения этого действия", "danger")
+        return redirect("/")
+
+    ban = db.session.get(Ban, ban_id)
+    if not ban:
+        if wants_json:
+            return jsonify({"error": "Запись не найдена"}), 404
+        flash("Запись не найдена", "danger")
+        return redirect("/admin/bans")
+
+    now_ts = int(time.time())
+    if ban.expires_at > now_ts:
+        msg = (
+            "Активный бан сначала снимите кнопкой «Разбанить», "
+            "затем при необходимости удалите строку из истории."
+        )
+        if wants_json:
+            return jsonify({"error": msg}), 400
+        flash(msg, "warning")
+        return redirect("/admin/bans")
+
+    username = ban.user.username
+    db.session.delete(ban)
+    db.session.commit()
+    if wants_json:
+        return jsonify({"ok": True})
+
+    flash(f"Запись о бане пользователя {username} удалена из истории", "success")
     return redirect("/admin/bans")
 
 
